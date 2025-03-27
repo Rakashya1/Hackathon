@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import GoogleMapComponent from "@/components/map/GoogleMapComponent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -231,37 +232,57 @@ const MapPage = () => {
                 </div>
               ) : (
                 <div className="relative h-full">
-                  {/* This would be replaced with an actual map component in a real implementation */}
-                  <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
-                    <div className="text-center max-w-md p-6">
-                      <MapPin className="h-16 w-16 text-blue-500 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">
-                        Interactive Map
-                      </h3>
-                      <p className="text-slate-600 mb-4">
-                        This is a placeholder for the interactive map. In a real
-                        implementation, this would be integrated with a mapping
-                        library like Google Maps, Mapbox, or Leaflet.
-                      </p>
-                      <div className="grid grid-cols-3 gap-2 mb-4">
-                        <div className="flex items-center justify-center p-2 bg-blue-100 rounded-md">
-                          <MapPin className="h-5 w-5 text-blue-500" />
-                          <span className="ml-1 text-sm font-medium">
-                            Missing
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-center p-2 bg-green-100 rounded-md">
-                          <MapPin className="h-5 w-5 text-green-500" />
-                          <span className="ml-1 text-sm font-medium">
-                            Sighted
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-center p-2 bg-yellow-100 rounded-md">
-                          <MapPin className="h-5 w-5 text-yellow-500" />
-                          <span className="ml-1 text-sm font-medium">
-                            Pending
-                          </span>
-                        </div>
+                  <GoogleMapComponent
+                    markers={[
+                      ...missingPersons.map((person) => ({
+                        id:
+                          person.id ||
+                          `missing-${Math.random().toString(36).substr(2, 9)}`,
+                        position: {
+                          lat: 40.7128 + (Math.random() * 0.1 - 0.05),
+                          lng: -74.006 + (Math.random() * 0.1 - 0.05),
+                        },
+                        title: person.full_name || "Unknown Person",
+                        type: "missing" as const,
+                        details: `Last seen: ${person.last_seen_location || "Unknown location"}`,
+                      })),
+                      ...sightings.map((sighting) => ({
+                        id:
+                          sighting.id ||
+                          `sighting-${Math.random().toString(36).substr(2, 9)}`,
+                        position: {
+                          lat: 40.7128 + (Math.random() * 0.1 - 0.05),
+                          lng: -74.006 + (Math.random() * 0.1 - 0.05),
+                        },
+                        title: sighting.person_name || "Reported Sighting",
+                        type:
+                          sighting.confidence > 0.8
+                            ? ("sighting" as const)
+                            : ("pending" as const),
+                        details: `Reported at: ${sighting.location || "Unknown location"}`,
+                      })),
+                    ]}
+                    height="600px"
+                  />
+                  <div className="absolute bottom-4 right-4 bg-white p-2 rounded-md shadow-md z-10">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="flex items-center justify-center p-2 bg-blue-100 rounded-md">
+                        <MapPin className="h-5 w-5 text-blue-500" />
+                        <span className="ml-1 text-sm font-medium">
+                          Missing
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center p-2 bg-green-100 rounded-md">
+                        <MapPin className="h-5 w-5 text-green-500" />
+                        <span className="ml-1 text-sm font-medium">
+                          Sighted
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-center p-2 bg-yellow-100 rounded-md">
+                        <MapPin className="h-5 w-5 text-yellow-500" />
+                        <span className="ml-1 text-sm font-medium">
+                          Pending
+                        </span>
                       </div>
                     </div>
                   </div>

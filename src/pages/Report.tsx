@@ -246,10 +246,7 @@ const ReportPage = () => {
                     <TabsTrigger value="missing">
                       Report Missing Person
                     </TabsTrigger>
-                    <TabsTrigger
-                      value="sighting"
-                      onClick={() => navigate("/sightings")}
-                    >
+                    <TabsTrigger value="sighting">
                       Report a Sighting
                     </TabsTrigger>
                   </TabsList>
