@@ -18,7 +18,7 @@ const DatabaseConnectionTest = () => {
       // Simple query to test the connection
       const { data, error } = await supabase
         .from("missing_persons")
-        .select("count(*)")
+        .select("*")
         .limit(1);
 
       if (error) throw error;
